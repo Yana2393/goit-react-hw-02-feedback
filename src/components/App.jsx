@@ -35,24 +35,38 @@ export const App = () => {
       style={{
         height: '100vh',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         fontSize: 36,
         color: '#010101',
       }}
     >
-      <Section title="Reviews Widget">
-        <FeedbackOptions options={options} onLeaveFeedback={onLeaveFeedback} />
-      </Section>
-      <Section title="Statistics">
-        <Statistics
-          good={state.good}
-          neutral={state.neutral}
-          bad={state.bad}
-          total={countTotalFeedback()}
-          positivePercentage={countPositiveFeedbackPercentage()}
-        />
-      </Section>
+      <div
+      
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+    
+        
+      >
+        <Section title="Reviews Widget">
+          <FeedbackOptions
+            options={options}
+            onLeaveFeedback={onLeaveFeedback}
+          />
+        </Section>
+        <Section title="Statistics">
+          <Statistics
+            good={state.good}
+            neutral={state.neutral}
+            bad={state.bad}
+            total={countTotalFeedback()}
+            positivePercentage={countPositiveFeedbackPercentage()}
+          />
+        </Section>
+      </div>
     </div>
   );
 };
