@@ -40,32 +40,43 @@ export const App = () => {
         alignItems: 'center',
         fontSize: 36,
         color: '#010101',
-      }}
-    >
+      }}>
       <div
-      
         style={{
           display: 'flex',
           flexDirection: 'column',
-        }}
-    
-        
-      >
-        <Section title="Reviews Widget">
-          <FeedbackOptions
-            options={options}
-            onLeaveFeedback={onLeaveFeedback}
-          />
-        </Section>
-        <Section title="Statistics">
-          <Statistics
-            good={state.good}
-            neutral={state.neutral}
-            bad={state.bad}
-            total={countTotalFeedback()}
-            positivePercentage={countPositiveFeedbackPercentage()}
-          />
-        </Section>
+        }}>
+        <div
+          style={{
+            width: '100%',
+            padding: 20,
+            backgroundColor: '#202123',
+            color: '#FFFFFF',
+          }}>
+          <Section title="Reviews Widget">
+            <FeedbackOptions
+              options={options}
+              onLeaveFeedback={onLeaveFeedback}
+            />
+          </Section>
+        </div>
+        <div
+          style={{
+            width: '100%',
+            padding: 20,
+            backgroundColor: '#343541',
+            color: '#FFFFFF',
+          }}>
+          <Section title="Statistics">
+            <Statistics
+              good={state.good}
+              neutral={state.neutral}
+              bad={state.bad}
+              total={countTotalFeedback()}
+              positivePercentage={countPositiveFeedbackPercentage()}
+            />
+          </Section>
+        </div>
       </div>
     </div>
   );
