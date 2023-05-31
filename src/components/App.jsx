@@ -1,83 +1,120 @@
-import { FeedbackOptions } from './FeedbackOptions';
-import { Statistics } from './Statistics';
-import { Section } from './Section';
-import React, { useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import FeedbackOptions from './FeedbackOptions';
+import Statistics from './Statistics';
+import Section from './Section';
+import Notification from './Notification';
 
-export const App = () => {
-  const [state, setState] = useState({
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  });
+export class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      good: 0,
+      neutral: 0,
+      bad: 0,
+    };
+  }
 
-  const options = ['good', 'neutral', 'bad'];
+  countTotalFeedback() {
+    const { good, neutral, bad } = this.state;
+    return good + neutral + bad;
+  }
 
-  const countTotalFeedback = () => {
-    return state.good + state.neutral + state.bad;
-  };
-
-  const countPositiveFeedbackPercentage = () => {
-    if (countTotalFeedback() === 0) {
+  countPositiveFeedbackPercentage() {
+    const { good } = this.state;
+    const total = this.countTotalFeedback();
+    if (total === 0) {
       return 0;
     }
-    return Math.round((state.good * 100) / countTotalFeedback());
-  };
+    return Math.round((good * 100) / total);
+  }
 
-  function onLeaveFeedback(reviewPoint) {
-    setState(oldState => {
-      const pointValue = oldState[reviewPoint] + 1;
-      return { ...oldState, [reviewPoint]: pointValue };
+  onLeaveFeedback(reviewPoint) {
+    this.setState(prevState => {
+      const pointValue = prevState[reviewPoint] + 1;
+      return { ...prevState, [reviewPoint]: pointValue };
     });
   }
 
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 36,
-        color: '#010101',
-      }}>
+  hasFeedback() {
+    const totalFeedback = this.countTotalFeedback();
+    return totalFeedback > 0;
+  }
+
+  renderStatistics() {
+    const { good, neutral, bad } = this.state;
+    const total = this.countTotalFeedback();
+    const positivePercentage = this.countPositiveFeedbackPercentage();
+
+    if (total === 0) {
+      return <Notification message="There is no feedback" />;
+    }
+
+    return (
+      <Statistics
+        good={good}
+        neutral={neutral}
+        bad={bad}
+        total={total}
+        positivePercentage={positivePercentage}
+      />
+    );
+  }
+
+  render() {
+    const options = ['good', 'neutral', 'bad'];
+
+    return (
       <div
         style={{
+          height: '100vh',
           display: 'flex',
           flexDirection: 'column',
-        }}>
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontSize: 36,
+          color: '#010101',
+        }}
+      >
         <div
           style={{
-            width: '100%',
-            padding: 20,
-            backgroundColor: '#202123',
-            color: '#FFFFFF',
-          }}>
-          <Section title="Reviews Widget">
-            <FeedbackOptions
-              options={options}
-              onLeaveFeedback={onLeaveFeedback}
-            />
-          </Section>
-        </div>
-        <div
-          style={{
-            width: '100%',
-            padding: 20,
-            backgroundColor: '#343541',
-            color: '#FFFFFF',
-          }}>
-          <Section title="Statistics">
-            <Statistics
-              good={state.good}
-              neutral={state.neutral}
-              bad={state.bad}
-              total={countTotalFeedback()}
-              positivePercentage={countPositiveFeedbackPercentage()}
-            />
-          </Section>
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div
+            style={{
+              width: '100%',
+              padding: 20,
+              backgroundColor: '#202123',
+              color: '#FFFFFF',
+            }}
+          >
+            <Section title="Reviews Widget">
+              <FeedbackOptions
+                options={options}
+                onLeaveFeedback={this.onLeaveFeedback.bind(this)}
+              />
+            </Section>
+          </div>
+          <div
+            style={{
+              width: '100%',
+              padding: 20,
+              backgroundColor: '#343541',
+              color: '#FFFFFF',
+            }}
+          >
+            <Section title="Statistics">
+              {this.renderStatistics()}
+            </Section>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+}
+
+App.propTypes = {
+  options: PropTypes.arrayOf(PropTypes.string),
 };
